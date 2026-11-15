@@ -1,0 +1,24 @@
+name: khmer_calendar
+description: Reusable Khmer Lunar (Chhankitek) & Cambodia Public Holiday Calendar package for Flutter.
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.6.0
+  intl: ^0.20.2
+  khmer_lunar_chhankitek: ^1.0.2
+  table_calendar: ^3.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  assets:
+    - assets/icons/buddha_khmer.png
