@@ -21,6 +21,9 @@ class KhmerCalendarView extends StatefulWidget {
   final bool showScrollToBottomButton;
   final List<KhmerHoliday>? customHolidays;
   final void Function(DateTime selectedDay, LunarDay? lunarDay)? onDaySelected;
+  final Widget Function(BuildContext context, KhmerHoliday holiday)?
+      holidayItemBuilder;
+  final void Function(KhmerHoliday holiday)? onHolidayTap;
 
   const KhmerCalendarView({
     super.key,
@@ -32,6 +35,8 @@ class KhmerCalendarView extends StatefulWidget {
     this.showScrollToBottomButton = true,
     this.customHolidays,
     this.onDaySelected,
+    this.holidayItemBuilder,
+    this.onHolidayTap,
   });
 
   @override
@@ -334,10 +339,14 @@ class _KhmerCalendarViewState extends State<KhmerCalendarView> {
       itemCount: holidays.length,
       itemBuilder: (context, index) {
         final holiday = holidays[index];
+        if (widget.holidayItemBuilder != null) {
+          return widget.holidayItemBuilder!(context, holiday);
+        }
+
         final dayStr = DateFormat('dd').format(holiday.date);
         final monthStr = _formatKhmerMonth(holiday.date);
 
-        return Container(
+        final card = Container(
           margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
             color: theme.surfaceColor,
@@ -423,6 +432,14 @@ class _KhmerCalendarViewState extends State<KhmerCalendarView> {
             ),
           ),
         );
+
+        if (widget.onHolidayTap != null) {
+          return GestureDetector(
+            onTap: () => widget.onHolidayTap!(holiday),
+            child: card,
+          );
+        }
+        return card;
       },
     );
   }
