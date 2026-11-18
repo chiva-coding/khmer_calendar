@@ -19,6 +19,7 @@ class KhmerCalendarPage extends StatefulWidget {
   final Widget Function(BuildContext context, KhmerHoliday holiday)?
       holidayItemBuilder;
   final void Function(KhmerHoliday holiday)? onHolidayTap;
+  final Widget? customLoading;
 
   const KhmerCalendarPage({
     super.key,
@@ -31,6 +32,7 @@ class KhmerCalendarPage extends StatefulWidget {
     this.onDaySelected,
     this.holidayItemBuilder,
     this.onHolidayTap,
+    this.customLoading,
   });
 
   @override
@@ -80,6 +82,7 @@ class _KhmerCalendarPageState extends State<KhmerCalendarPage> {
         onDaySelected: widget.onDaySelected,
         holidayItemBuilder: widget.holidayItemBuilder,
         onHolidayTap: widget.onHolidayTap,
+        customLoading: widget.customLoading,
       ),
     );
   }

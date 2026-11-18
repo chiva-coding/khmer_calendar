@@ -24,6 +24,7 @@ class KhmerCalendarView extends StatefulWidget {
   final Widget Function(BuildContext context, KhmerHoliday holiday)?
       holidayItemBuilder;
   final void Function(KhmerHoliday holiday)? onHolidayTap;
+  final Widget? customLoading;
 
   const KhmerCalendarView({
     super.key,
@@ -37,6 +38,7 @@ class KhmerCalendarView extends StatefulWidget {
     this.onDaySelected,
     this.holidayItemBuilder,
     this.onHolidayTap,
+    this.customLoading,
   });
 
   @override
@@ -132,6 +134,12 @@ class _KhmerCalendarViewState extends State<KhmerCalendarView> {
   Future<void> _fetchHolidays(int year) async {
     if (!widget.showHolidays || widget.customHolidays != null) return;
     if (_fetchedYear == year) return;
+
+    final cached = KhmerHolidayService.getCachedHolidays(year);
+    if (cached != null) {
+      _setHolidays(cached, year);
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -269,9 +277,10 @@ class _KhmerCalendarViewState extends State<KhmerCalendarView> {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
-          ),
+          child: widget.customLoading ??
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+              ),
         ),
       );
     }

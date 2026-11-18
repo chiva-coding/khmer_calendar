@@ -28,23 +28,33 @@ class KhmerHoliday {
 class KhmerHolidayService {
   const KhmerHolidayService._();
 
+  static final Map<int, List<KhmerHoliday>> _cachedHolidays = {};
+
+  /// Returns cached holidays for [year] if available, otherwise null.
+  static List<KhmerHoliday>? getCachedHolidays(int year) => _cachedHolidays[year];
+
   static Future<List<KhmerHoliday>> fetchPublicHolidays(
     int year, {
     http.Client? client,
   }) async {
+    if (_cachedHolidays.containsKey(year) && _cachedHolidays[year]!.isNotEmpty) {
+      return _cachedHolidays[year]!;
+    }
     final httpClient = client ?? http.Client();
     final shouldClose = client == null;
     try {
       final url = Uri.parse(
         'https://date.nager.at/api/v3/PublicHolidays/$year/KH',
       );
-      final response = await httpClient.get(url);
+      final response = await httpClient.get(url).timeout(const Duration(seconds: 8));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        return data
+        final list = data
             .whereType<Map<String, dynamic>>()
             .map(KhmerHoliday.fromJson)
             .toList();
+        _cachedHolidays[year] = list;
+        return list;
       }
       throw Exception('Error: (${response.statusCode})');
     } finally {
